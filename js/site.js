@@ -32,7 +32,7 @@ var mapsvg,
 	mapprojection,
 	g,
 	allLocsData = [],
-	agencyFilter = "UNOCHA";
+	agencyFilter = "All agencies";
 
 // colors
 var regionalOfficeColor = '#CD3A1F',
@@ -88,7 +88,7 @@ function generateMaps (adm0, adm1, locData) {
     		.attr('class', 'key')
     		.html(function(d){ return d;});
     	$('#maplegend').show();
-    	
+
     var zoomIn = d3.select('#map')
     .append('div')
     .attr('class', 'zoomBtn')
@@ -103,7 +103,8 @@ function generateMaps (adm0, adm1, locData) {
 } // end generateMaps
 
 function showAgencylocation () {
-	var locs = allLocsData.filter(function(d){ return d.office === agencyFilter; });
+	var locs;
+	agencyFilter === "All agencies" ? locs = allLocsData : locs = allLocsData.filter(function(d){ return d.office === agencyFilter; });
 	var cercle = g.selectAll('circle')
 				  .data(locs).enter()
 				  .append('circle')
@@ -152,8 +153,8 @@ function updateMap (argument) {
 	showAgencylocation();
 }//end updateMap
 
-$('.btn').on('click', function(event){
-	agencyFilter = $(this).attr('id');
+$('#dropdown').on('change', function(event){
+	agencyFilter = $('#dropdown option:selected').text();
 	updateMap();
 });
 

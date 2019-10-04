@@ -1,7 +1,4 @@
 
-h4 {
-	padding-top: 45px;
-}
 
 .ocha-logo {
   align-self: flex-start;
@@ -22,6 +19,22 @@ h4 {
 	padding-right: 15px;
 }
 
+/*hr{
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-top: 1px solid #5A86B5;
+}*/
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-top: 1px solid #5A86b5;
+}
+#dropdown{
+	width: 90%;
+	height: 30px;
+	margin: 0 10px 0 10px;
+	font-size: 15px;
+}
 #map {
 	width: 100%;
 	height: 750px;
