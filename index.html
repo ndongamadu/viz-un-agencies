@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>HDX vizualisation</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="css/site.css"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <script src="js/jquery.js"></script>
+    <script src="js/d3.min.js"></script>
+    <script src="js/d3.tip.min.js"></script>
+    <script src="js/crossfilter.v1.min.js"></script>
+    <script src="js/topojson.v1.min.js"></script>
+</head>
+<body>
+	<!-- add loader -->
+	<div class="container">
+		<div class="row title">
+			<img src="logos/ocha.svg" alt="" class="ocha-logo">
+			<h4>UN AGENCIES PRESENCE - WEST AND CENTRAL AFRICA</h4>
+		</div>
+		<div class="row">
+			<p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus id eligendi, qui vitae suscipit beatae vel omnis est quod, dolor ut quo sit quos culpa aliquid ipsam cupiditate repudiandae consequatur.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus id eligendi, qui vitae suscipit beatae vel omnis est quod, dolor ut quo sit quos culpa aliquid ipsam cupiditate.</p>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+				<h5>UN AGENCIES</h5>
+				<button type="button" class="btn" id="UNOCHA">
+					<img src="logos/unocha.png" alt="" class="logo">
+				</button>
+				<button type="button" class="btn" id="WFP">
+					<img src="logos/wfp.png" alt="" class="logo">
+				</button>
+				<button type="button" class="btn" id="UNICEF">
+					<img src="logos/unicef.png" alt="" class="logo">
+				</button>
+				<button type="button" class="btn" id="UNFPA">
+					<img src="logos/unfpa.png" alt="" class="logo">
+				</button>
+			</div>
+			<div class="col-md-9">
+				<div id="map"></div>
+				<div id="maplegend">
+					<p>Legende</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- scripts -->
+	<script src="js/site.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
