@@ -30,8 +30,11 @@ function hxlProxyToJSON(input){
 var mapsvg,
 	mapscale,
 	mapprojection,
+	ndx,
 	g,
 	allLocsData = [],
+	keyFigures,
+	overallKeyFig = {},
 	agencyFilter = "All agencies";
 
 // colors
@@ -40,8 +43,39 @@ var regionalOfficeColor = '#CD3A1F',
 	antennaColor = '#7FB92F',
 	otherColor = '#0077be';
 
+
+function updateKeyFigures (country) {
+	if (typeof keyFigures !=="undefined") {
+		var arr = keyFigures.filter(function(d){
+			return d.key[0]===country;
+		}).sort();
+	} else {
+		// setTimeout(updateKeyFigures(country), 200);
+		// console.log("time is out, j attends")
+	}
+
+    var html = "";
+    for (var i = 0; i < arr.length; i++) {
+    	html +='<div class="keyfig">'+arr[i].value+ '<span> '+arr[i].key[1]+'</span></div>'
+    }
+
+    $('#keyfigures').html('');
+    $('#keyfigures').append(html);
+}// end showKeyFigures
+
 //draw adm0 map
 function generateMaps (adm0, adm1, locData) {
+	ndx = crossfilter(locData);
+	var dimensionAll = ndx.dimension(function(d){
+		return d['#indicator+category'];});
+	var group = dimensionAll.group().top(Infinity);
+	for (var i = 0; i < group.length; i++) {
+		overallKeyFig[group[i].key] = group[i].value;
+	}
+	var dim = ndx.dimension(function(d){
+		return [d['#country+name'],d['#indicator+category']];
+	});
+	keyFigures = dim.group().top(Infinity);
 
 	var width = $('#map').width();
 	var height = $('#map').height();
@@ -54,12 +88,18 @@ function generateMaps (adm0, adm1, locData) {
 						  .center([6.8, 2])
 						  .scale(mapscale)
 						  .translate([width / 2, height / 1.6]);
-	g = mapsvg.append('g').attr('id','adm0');
-	g.selectAll('path')
+	g = mapsvg.append('g');//.attr('id','adm0');
+	var path = g.selectAll('path')
 		.data(adm0.features).enter()
 		.append('path')
-		.attr('d', d3.geo.path().projection(mapprojection));
-
+		.attr('d', d3.geo.path().projection(mapprojection))
+		.attr('id', function(d){
+			var adm0 = (d.properties.admin0Name !='0') ? d.properties.admin0Name : 'uncovered';
+			return adm0;
+		});
+	path.on('mouseover', function(d){
+		updateKeyFigures(d.properties.admin0Name);
+	});
 	// var g2 = mapsvg.append('g').attr('id', 'adm1');
 	// var adm1 = g.selectAll('path')
 	// 			 .data(adm1.features).enter()
@@ -100,6 +140,12 @@ function generateMaps (adm0, adm1, locData) {
     .attr('class', 'zoomBtn')
     .attr('id','zoom-out')
     .html('–');
+
+    var html = "";
+    for(m in overallKeyFig){
+    	html +='<div class="keyfig">'+overallKeyFig[m]+ '<span> '+m+'</span></div>'
+    }
+    $('#keyfigures').append(html);
 } // end generateMaps
 
 function showAgencylocation () {
@@ -184,6 +230,7 @@ $.when(adm0DataCall, adm1DataCall, unLocationsCall).then(function(adm0Args, adm1
 	for (var i = 0; i < locData.length; i++) {
 		allLocsData.push({geo: [locData[i]['#geo+lon'],locData[i]['#geo+lat']],country:locData[i]['#country+name'],adm2: locData[i]['#adm2+name'],office:locData[i]['#indicator+agency'], officeType:locData[i]['#indicator+category']});
 	}
+
 	generateMaps(adm0, adm1, locData);
 	showAgencylocation(locData);
 

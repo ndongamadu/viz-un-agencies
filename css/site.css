@@ -13,6 +13,7 @@
 	display: flex;
 }
 
+
 .description {
 	text-align: justify;
 	margin-right: 15px;
@@ -31,8 +32,16 @@ hr {
 #dropdown{
 	width: 90%;
 	height: 30px;
-	margin: 0 10px 0 10px;
+	margin: 0 10px 10px 10px;
 	font-size: 15px;
+}
+
+.keyfig {
+    font-size: 36px;
+    margin-left: 10px;
+}
+.keyfig span {
+    font-size: 19px;
 }
 #map {
 	width: 100%;
@@ -53,7 +62,7 @@ hr {
     background-color: #FFF;
     border: 1px solid #CCC;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    bottom: 10px;
+    bottom: 80px;
     cursor: pointer;
     font-size: 20px;
     font-weight: 700;
@@ -64,13 +73,14 @@ hr {
     text-align: center;
     width: 25px;
 }
-#map #zoom-in{
-    bottom: 34px;
+
+#map #zoom-out{
+    bottom: 57px;
 }
 
 #maplegend{
     background-color: rgba(204,204,204,0.5);
-    bottom: 5px;
+    bottom: 50px;
     display: none;
     font-size: 11px;
     left: 20px;
@@ -101,6 +111,7 @@ hr {
 	font-size: 14px;
     margin: 0 0 0 0;
 }
+
 
 .d3-tip {
     padding:5px;
