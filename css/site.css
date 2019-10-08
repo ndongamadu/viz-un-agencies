@@ -13,7 +13,9 @@
 	display: flex;
 }
 
-
+.logo {
+    
+}
 .description {
 	text-align: justify;
 	margin-right: 15px;
@@ -39,9 +41,16 @@ hr {
 .keyfig {
     font-size: 36px;
     margin-left: 10px;
+    color: #026CB6;
+    font-weight: bold;
 }
 .keyfig span {
     font-size: 19px;
+    font-weight: normal;
+/*    color:black;*/
+}
+#keyfigures {
+    height: 260px;
 }
 #map {
 	width: 100%;
@@ -52,11 +61,11 @@ hr {
     border: 1px solid #CCC;
 }
 
-#map > svg path{
+/*#map > svg path{
     fill: #CCDDEE;
     stroke: #FFF;
     stroke-width: 1;
-}
+}*/
 
 #map .zoomBtn{
     background-color: #FFF;

@@ -42,29 +42,33 @@ var regionalOfficeColor = '#CD3A1F',
 	countryOfficeColor = '#144372',
 	antennaColor = '#7FB92F',
 	otherColor = '#0077be';
+var inactiveFillColor = '#F2F2F2';//'#F8F4EC';
+var fillColor = '#CCDDEE';//;
 
 
 function updateKeyFigures (country) {
-	if (typeof keyFigures !=="undefined") {
-		var arr = keyFigures.filter(function(d){
-			return d.key[0]===country;
+	var html = "";
+	var arr;
+	$('#keyfigures').html('');
+
+	if (agencyFilter !== "All agencies") {
+		arr = keyFigures.filter(function(d){
+			return (d.key[0]===country && d.key[1]===agencyFilter);
 		}).sort();
 	} else {
-		// setTimeout(updateKeyFigures(country), 200);
-		// console.log("time is out, j attends")
+		arr = keyFigures.filter(function(d){
+			return (d.key[0]===country);
+		}).sort();
 	}
 
-    var html = "";
-    for (var i = 0; i < arr.length; i++) {
-    	html +='<div class="keyfig">'+arr[i].value+ '<span> '+arr[i].key[1]+'</span></div>'
-    }
-
-    $('#keyfigures').html('');
+	for (var i = 0; i < arr.length; i++) {
+		html +='<div class="keyfig">'+arr[i].value+ '<span> '+arr[i].key[2]+'</span></div>';
+	}
     $('#keyfigures').append(html);
 }// end showKeyFigures
 
 //draw adm0 map
-function generateMaps (adm0, adm1, locData) {
+function generateMaps (adm0, locData) {
 	ndx = crossfilter(locData);
 	var dimensionAll = ndx.dimension(function(d){
 		return d['#indicator+category'];});
@@ -73,7 +77,7 @@ function generateMaps (adm0, adm1, locData) {
 		overallKeyFig[group[i].key] = group[i].value;
 	}
 	var dim = ndx.dimension(function(d){
-		return [d['#country+name'],d['#indicator+category']];
+		return [d['#country+name'],d['#indicator+agency'],d['#indicator+category']];
 	});
 	keyFigures = dim.group().top(Infinity);
 
@@ -88,7 +92,7 @@ function generateMaps (adm0, adm1, locData) {
 						  .center([6.8, 2])
 						  .scale(mapscale)
 						  .translate([width / 2, height / 1.6]);
-	g = mapsvg.append('g');//.attr('id','adm0');
+	g = mapsvg.append('g').attr('id','adm0');
 	var path = g.selectAll('path')
 		.data(adm0.features).enter()
 		.append('path')
@@ -96,15 +100,26 @@ function generateMaps (adm0, adm1, locData) {
 		.attr('id', function(d){
 			var adm0 = (d.properties.admin0Name !='0') ? d.properties.admin0Name : 'uncovered';
 			return adm0;
-		});
+		}).attr('class', function(d){
+			var classname = (d.properties.admin0Pcod !=null) ? 'adm0' : 'inactive';
+			return classname;
+		}).attr('fill', function(d) {
+			var clr = (d.properties.admin0Pcod != null) ? fillColor: inactiveFillColor;
+      		return clr;
+      	}).attr('stroke-width', 1)
+      	.attr('stroke','#FFF');
+    	// .attr('stroke','#7d868d');
+
 	path.on('mouseover', function(d){
-		updateKeyFigures(d.properties.admin0Name);
+		d.properties.admin0Pcod !==null ? updateKeyFigures(d.properties.admin0Name) : '';
+	}).on('mouseout', function(d){
+		var html = "";
+		for(m in overallKeyFig){
+			html +='<div class="keyfig">'+overallKeyFig[m]+ '<span> '+m+'</span></div>'
+		}
+		$('#keyfigures').html('');
+		$('#keyfigures').append(html);
 	});
-	// var g2 = mapsvg.append('g').attr('id', 'adm1');
-	// var adm1 = g.selectAll('path')
-	// 			 .data(adm1.features).enter()
-	// 			 .append('path')
-	// 			 .attr('d', d3.geo.path().projection(mapprojection));
 
     var legend = d3.select('#maplegend')
     				.append('ul');
@@ -201,20 +216,50 @@ function updateMap (argument) {
 
 $('#dropdown').on('change', function(event){
 	agencyFilter = $('#dropdown option:selected').text();
+
+	if (agencyFilter==="All agencies") {
+	    var html = "";
+	    $('#keyfigures').html('');
+	    for(m in overallKeyFig){
+	    	html +='<div class="keyfig">'+overallKeyFig[m]+ '<span> '+m+'</span></div>'
+	    }
+	    $('#keyfigures').append(html);
+	} else {
+		var html = '';
+		var arr = keyFigures.filter(function(d){
+			return d.key[1]===agencyFilter;
+		}).sort();
+		var cat = [],
+			tab = {};
+		for (var i = 0; i < arr.length; i++) {
+			cat.includes(arr[i].key[2]) ? '' : cat.push(arr[i].key[2]);
+			// html +='<div class="keyfig">'+arr[i].value+ '<span> '+arr[i].key[2]+'</span></div>';
+		}
+		for (var i = 0; i < cat.length; i++) {
+			var val = 0;
+			for (var k = 0; k < arr.length; k++) {
+				arr[k].key[2]===cat[i] ? val +=arr[k].value : '';
+			}
+			tab[cat[i]] = val;
+		}
+		for(t in tab){
+			html +='<div class="keyfig">'+tab[t]+ '<span> '+t+'</span></div>';
+
+		}
+		$('#keyfigures').html('');
+		$('#keyfigures').append(html);
+	}
+
 	updateMap();
 });
 
 // adm0 data
 var adm0DataCall = $.ajax({
 	type: 'GET',
-	url: 'data/adm0.json',
+	url: 'data/adm000.json',
 	dataType: 'json',
 });
-var adm1DataCall = $.ajax({
-	type: 'GET',
-	url: 'data/adm1.json',
-	dataType: 'json',
-});
+
 
 //UN location data
 var unLocationsCall = $.ajax({
@@ -223,15 +268,13 @@ var unLocationsCall = $.ajax({
 	dataType: 'json',
 });
 
-$.when(adm0DataCall, adm1DataCall, unLocationsCall).then(function(adm0Args, adm1Args, unLocationsArgs){
-	var adm0 = topojson.feature(adm0Args[0],adm0Args[0].objects.wcaadm0);
-	var adm1 = topojson.feature(adm1Args[0],adm1Args[0].objects.wcaadm1);
+$.when(adm0DataCall, unLocationsCall).then(function(adm0Args, unLocationsArgs){
+	var adm0 = topojson.feature(adm0Args[0],adm0Args[0].objects.adm0_complet);
 	var locData = hxlProxyToJSON(unLocationsArgs[0]);
 	for (var i = 0; i < locData.length; i++) {
 		allLocsData.push({geo: [locData[i]['#geo+lon'],locData[i]['#geo+lat']],country:locData[i]['#country+name'],adm2: locData[i]['#adm2+name'],office:locData[i]['#indicator+agency'], officeType:locData[i]['#indicator+category']});
 	}
-
-	generateMaps(adm0, adm1, locData);
+	generateMaps(adm0,locData);
 	showAgencylocation(locData);
 
 });
