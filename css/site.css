@@ -13,8 +13,8 @@
 	display: flex;
 }
 
-.logo {
-    
+.viz {
+    display: none;
 }
 .description {
 	text-align: justify;
@@ -140,4 +140,34 @@ hr {
 .logo{
 	width: 100%;
 	height: 80px;
+}
+
+.sp {
+	clear: both;
+	height: 32px;
+    left: 50%;
+	margin-left: -16px;
+	position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+	width: 32px;
+    z-index: 1;
+}
+
+
+/* Spinner Circle Rotation */
+.sp-circle {
+	border: 4px rgba(0,0,0,0.25) solid;
+	border-top: 4px rgba(0,0,0,1) solid;
+	border-radius: 50%;
+	-webkit-animation: spCircRot .6s infinite linear;
+	animation: spCircRot .6s infinite linear;
+}
+@-webkit-keyframes spCircRot {
+	from { -webkit-transform: rotate(0deg); }
+	to { -webkit-transform: rotate(359deg); }
+}
+@keyframes spCircRot {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(359deg); }
 }

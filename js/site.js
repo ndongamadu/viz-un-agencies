@@ -83,6 +83,8 @@ function updateKeyFigures (country) {
 
 //draw adm0 map
 function generateMaps (adm0, locData) {
+	$('.sp-circle').remove();
+	$('.viz').show();
 	ndx = crossfilter(locData);
 	var dimensionAll = ndx.dimension(function(d){
 		return d['#indicator+category'];});
