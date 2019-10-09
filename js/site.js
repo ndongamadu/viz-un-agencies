@@ -304,7 +304,6 @@ $.when(adm0DataCall, unLocationsCall).then(function(adm0Args, unLocationsArgs){
 		allLocsData.push({geo: [locData[i]['#geo+lon'],locData[i]['#geo+lat']],country:locData[i]['#country+name'],adm2: locData[i]['#indicator+name'],office:locData[i]['#indicator+agency'], officeType:locData[i]['#indicator+category']});
 		agenciesDrops.includes(locData[i]['#indicator+agency'])? '': agenciesDrops.push(locData[i]['#indicator+agency']);
 	}
-	console.log(agenciesDrops)
 	generateMaps(adm0,locData);
 	showAgencylocation(locData);
 
