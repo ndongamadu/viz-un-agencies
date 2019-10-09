@@ -48,22 +48,36 @@ var fillColor = '#CCDDEE';//;
 
 function updateKeyFigures (country) {
 	var html = "";
-	var arr;
 	$('#keyfigures').html('');
-
+	var arr;
 	if (agencyFilter !== "All agencies") {
 		arr = keyFigures.filter(function(d){
 			return (d.key[0]===country && d.key[1]===agencyFilter);
 		}).sort();
+		for (var i = 0; i < arr.length; i++) {
+			html +='<div class="keyfig">'+arr[i].value+ '<span> '+arr[i].key[2]+'</span></div>';
+		}
 	} else {
 		arr = keyFigures.filter(function(d){
 			return (d.key[0]===country);
 		}).sort();
+		var cat = [],
+			tab = {};
+		for (var i = 0; i < arr.length; i++) {
+			cat.includes(arr[i].key[2])? '': cat.push(arr[i].key[2]);
+		}
+		for (var i = 0; i < cat.length; i++) {
+			var val = 0;
+			for (var k = 0; k < arr.length; k++) {
+				arr[k].key[2]===cat[i] ? val += arr[k].value : '';
+			}
+			tab[cat[i]] = val;
+		}
+		for (t in tab){
+			html +='<div class="keyfig">'+tab[t]+ '<span> '+t+'</span></div>';
+		}
 	}
 
-	for (var i = 0; i < arr.length; i++) {
-		html +='<div class="keyfig">'+arr[i].value+ '<span> '+arr[i].key[2]+'</span></div>';
-	}
     $('#keyfigures').append(html);
 }// end showKeyFigures
 
@@ -272,7 +286,7 @@ $.when(adm0DataCall, unLocationsCall).then(function(adm0Args, unLocationsArgs){
 	var adm0 = topojson.feature(adm0Args[0],adm0Args[0].objects.adm0_complet);
 	var locData = hxlProxyToJSON(unLocationsArgs[0]);
 	for (var i = 0; i < locData.length; i++) {
-		allLocsData.push({geo: [locData[i]['#geo+lon'],locData[i]['#geo+lat']],country:locData[i]['#country+name'],adm2: locData[i]['#adm2+name'],office:locData[i]['#indicator+agency'], officeType:locData[i]['#indicator+category']});
+		allLocsData.push({geo: [locData[i]['#geo+lon'],locData[i]['#geo+lat']],country:locData[i]['#country+name'],adm2: locData[i]['#indicator+name'],office:locData[i]['#indicator+agency'], officeType:locData[i]['#indicator+category']});
 	}
 	generateMaps(adm0,locData);
 	showAgencylocation(locData);
