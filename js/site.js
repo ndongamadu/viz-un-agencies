@@ -30,6 +30,7 @@ function hxlProxyToJSON(input){
 var mapsvg,
 	mapscale,
 	mapprojection,
+	agenciesDrops = [],
 	ndx,
 	g,
 	allLocsData = [],
@@ -83,6 +84,7 @@ function updateKeyFigures (country) {
 
 //draw adm0 map
 function generateMaps (adm0, locData) {
+	generateDropdown();
 	$('.sp-circle').remove();
 	$('.viz').show();
 	ndx = crossfilter(locData);
@@ -269,6 +271,17 @@ $('#dropdown').on('change', function(event){
 	updateMap();
 });
 
+
+//load agencies list in the dropdown
+function generateDropdown() {
+	var dropdws = '';
+	for (var i = 0; i < agenciesDrops.length; i++) {
+		dropdws +='<option value="'+agenciesDrops[i]+'">'+agenciesDrops[i]+'</option>';
+	}
+	// $('#dropdown').html('');
+	$('#dropdown').append(dropdws);
+}//end generateDropdwon
+
 // adm0 data
 var adm0DataCall = $.ajax({
 	type: 'GET',
@@ -289,7 +302,9 @@ $.when(adm0DataCall, unLocationsCall).then(function(adm0Args, unLocationsArgs){
 	var locData = hxlProxyToJSON(unLocationsArgs[0]);
 	for (var i = 0; i < locData.length; i++) {
 		allLocsData.push({geo: [locData[i]['#geo+lon'],locData[i]['#geo+lat']],country:locData[i]['#country+name'],adm2: locData[i]['#indicator+name'],office:locData[i]['#indicator+agency'], officeType:locData[i]['#indicator+category']});
+		agenciesDrops.includes(locData[i]['#indicator+agency'])? '': agenciesDrops.push(locData[i]['#indicator+agency']);
 	}
+	console.log(agenciesDrops)
 	generateMaps(adm0,locData);
 	showAgencylocation(locData);
 
